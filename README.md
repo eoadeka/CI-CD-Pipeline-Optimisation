@@ -81,6 +81,7 @@ This project focuses on automating the continuous integration and continuous dep
                 - Enter Jenkinsfile as Script Path
             - Save
 4. Automate Build Stage
+
 5. Store Artifact
 6. Set up Development Environment
 6. Set up Testing Environment
