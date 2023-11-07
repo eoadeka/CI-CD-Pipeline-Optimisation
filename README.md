@@ -83,6 +83,7 @@ This project focuses on automating the continuous integration and continuous dep
 4. Automate Build Stage
 
 5. Store Artifact
+
 6. Set up Development Environment
 6. Set up Testing Environment
 
