@@ -85,7 +85,6 @@ This project focuses on automating the continuous integration and continuous dep
 5. Store Artifact
 
 6. Set up Development Environment
-
 7. Set up Testing Environment
 
 ## SIMULATION
