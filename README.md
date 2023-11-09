@@ -86,7 +86,7 @@ This project focuses on automating the continuous integration and continuous dep
 
 6. Set up Development Environment
 
-6. Set up Testing Environment
+7. Set up Testing Environment
 
 ## SIMULATION
 
