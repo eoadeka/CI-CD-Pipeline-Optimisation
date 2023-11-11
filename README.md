@@ -73,13 +73,55 @@ This project focuses on automating the continuous integration and continuous dep
             - Enter 'A CI/CD Pipeline' as the description
             - Tick '**Github Project**' and enter the project url
             - Configure Build Triggers
-                - Tick '***GitHub hook trigger for GITScm polling***' to allow Jenkins work whenever a push is made to GitHub
+                - Tick '***GitHub hook trigger for GITSCM polling***' to allow Jenkins work whenever a push is made to GitHub
+                - Tick '***Poll SCM***', and enter 'H/2 * * * * ' as Schedule. To poll every 2 minutes
             - COnfigure pipeline
                 - Set '***Pipeline script from SCM***' as Definition
                 - Choose Git as SCM
                 - Enter the repositories details
                 - Enter Jenkinsfile as Script Path
             - Save
+4. Set up Artifactory (to store build artifacts)
+    a. Install and Initial Setup
+        - Download on local machine (windows) from https://tinyurl.com/yk8mv856 *this link has been shortened
+        - Extract All 
+        - Move extracted folder to This PC
+        - Navigate into the folder and select 'activate.bat'
+        - Artifactory will be installed 
+        - Navigate to http://localhost:8081/artifactory/webapp/
+        - Login with the following credentials
+            - username: admin
+            - password: password
+        - Once logged in, a modal window will show, and follow through the following steps:
+            - Set Admin Password
+                - Set a new password
+            - Skip the 'Configure a Proxy Server'
+            - Create repositories
+                - Choose 'Generic' as the package type
+                - Click 'Create
+            - Finish
+    b. Set up another user
+        - Navigate to Admin on the menu
+        - Under Security, Select 'Users'
+        - Add New User
+            - Enter Username
+            - Enter Email Address
+            - Give the user 'Admin Privileges'
+            - Set password
+            - Save
+5. Configure Jenkins
+    - Navigate to manage Jenkins -> Plugins -> Available plugins
+        - Search for 'Artifactory', select, and Install without restart
+    - Navigate to Manage Jenkins -> System
+        - Scroll down to JFrog
+        - Click 'Add JFrog Platform Instance' and enter the required details:
+            - Instance ID: my-jfrog-server
+            - URL: http://localhost:8081/ *if on localhost
+            - Default Deployer Credentials
+                - Username and Password of the new user created
+        - Test Connection
+    - Save Changes
+
 4. Automate Build Stage
 
 5. Store Artifact
