@@ -1,4 +1,3 @@
-ella-adeka_codecommit_credentials.csv
 
 # -*- conf -*-
 # References:
@@ -8,8 +7,6 @@ ella-adeka_codecommit_credentials.csv
 # Build Artifacts
 dist/
 build/
-
-CI_CD_Pipline_with_AWS.egg-info
 
 # Compiled Python Files
 *.pyc
