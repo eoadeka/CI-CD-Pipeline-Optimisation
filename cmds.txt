@@ -1,0 +1,6 @@
+Terraform
+
+Docker
+To run container image
+    - docker build -t ci-cd-pipeline ./my_app
+    - docker run -dp 5000:5000 ci-cd-pipeline 
