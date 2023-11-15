@@ -8,12 +8,12 @@ pipeline {
 
   stages {
 
-    stage('Checkout') {
-      // checkout source code from version control
-      steps {
-        checkout scm
-      }
-    }
+    // stage('Checkout') {
+    //   // checkout source code from version control
+    //   steps {
+    //     checkout scm
+    //   }
+    // }
 
     // Build Stage
     stage('Build') {
