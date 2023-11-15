@@ -1,0 +1,11 @@
+version: '1.0'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ci-cd-pipeline-compose-dev
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development

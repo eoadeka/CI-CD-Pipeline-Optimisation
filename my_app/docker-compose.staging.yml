@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  web:
+    image: ci-cd-pipeline
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "com.example.environment=staging"
+    environment:
+      - FLASK_ENV=staging
