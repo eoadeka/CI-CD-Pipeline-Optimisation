@@ -21,8 +21,8 @@ pipeline {
         script {
           bat 'echo "Building application..."'
           // Build for local/dev environment
-          bat 'docker build -t ci-cd-pipeline ./my_app'
-          bat 'docker run -dp 5000:5000 ci-cd-pipeline'
+          bat 'docker build -t ella-adeka/ci-cd-pipeline ./my_app'
+          bat 'docker run -dp 5000:5000 ella-adeka/ci-cd-pipeline'
         }
       }
     }
