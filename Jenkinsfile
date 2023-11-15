@@ -8,12 +8,12 @@ pipeline {
 
   stages {
 
-    // stage('Checkout') {
-    //   // checkout source code from version control
-    //   steps {
-    //     checkout scm
-    //   }
-    // }
+    stage('Checkout') {
+      // checkout source code from version control
+      steps {
+        checkout scm
+      }
+    }
 
     // Build Stage
     stage('Build') {
@@ -21,8 +21,8 @@ pipeline {
         script {
           bat 'echo "Building application..."'
           // Build for local/dev environment
-          docker build -t ci-cd-pipeline ./my_app
-          docker run -dp 5000:5000 ci-cd-pipeline
+          bat 'docker build -t ci-cd-pipeline ./my_app'
+          bat 'docker run -dp 5000:5000 ci-cd-pipeline'
         }
       }
     }
