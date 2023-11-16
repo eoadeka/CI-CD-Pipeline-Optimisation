@@ -75,7 +75,7 @@ This project focuses on automating the continuous integration and continuous dep
             - Configure Build Triggers
                 - Tick '***GitHub hook trigger for GITSCM polling***' to allow Jenkins work whenever a push is made to GitHub
                 - Tick '***Poll SCM***', and enter 'H/2 * * * * ' as Schedule. To poll every 2 minutes
-            - COnfigure pipeline
+            - Configure pipeline
                 - Set '***Pipeline script from SCM***' as Definition
                 - Choose Git as SCM
                 - Enter the repositories details

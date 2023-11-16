@@ -28,7 +28,7 @@ pipeline {
     }
 
     // Test Stage
-    stage('test') {
+    stage('Test') {
       //  Run Unit and Integration Tests
       steps {
         script {
