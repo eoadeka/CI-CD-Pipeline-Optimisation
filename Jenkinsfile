@@ -5,6 +5,7 @@ pipeline {
   //   GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
   //   GITHUB_TOKEN = credentials('')
   // }
+  // dockerhub
 
   stages {
 
@@ -16,13 +17,12 @@ pipeline {
     }
 
     // Build Stage
-    stage('Build') {
+    stage('Build Image') {
       steps {
         script {
           bat 'echo "Building application..."'
           // Build for local/dev environment
           bat 'docker build -t ella-adeka/ci-cd-pipeline ./my_app'
-          bat 'docker run -dp 5000:5000 ella-adeka/ci-cd-pipeline'
         }
       }
     }
