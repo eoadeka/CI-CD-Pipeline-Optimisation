@@ -121,13 +121,12 @@ This project focuses on automating the continuous integration and continuous dep
                 - Username and Password of the new user created
         - Test Connection
     - Save Changes
+6. Automate Build Stage
 
-4. Automate Build Stage
+7. Store Artifact
 
-5. Store Artifact
-
-6. Set up Development Environment
-7. Set up Testing Environment
+8. Set up Development Environment
+9. Set up Testing Environment
 
 ## SIMULATION
 
