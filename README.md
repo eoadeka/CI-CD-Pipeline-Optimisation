@@ -50,8 +50,8 @@ This project focuses on automating the continuous integration and continuous dep
 1. Set up the web application
 2. Set up Version Control
 3. Set up Jenkins
-    a. Install Github Integration Plugin in Jenkins in order for Jenkins to work with our GitHub repo.
-    b. Configure webhook
+    - Install Github Integration Plugin in Jenkins in order for Jenkins to work with our GitHub repo.
+    - Configure webhook
         -Navigate to project repository on Github > webhooks
         - Click "add webhook"
         - Configure the following:
@@ -64,7 +64,7 @@ This project focuses on automating the continuous integration and continuous dep
                     Select "Pull Requests" and "Pushes"
             - Make sure "Active is checked/ticked
         - Add webhook
-    c. Create Jenkins project
+    - Create Jenkins project
         - In Jenkins, click '**New Item**' to create a new project.
         - Enter item name as '***CICDPipelineOptimisation***' 
         - Chose '***Pipeline***' as project
@@ -82,7 +82,7 @@ This project focuses on automating the continuous integration and continuous dep
                 - Enter Jenkinsfile as Script Path
             - Save
 4. Set up Artifactory (to store build artifacts)
-    a. Install and Initial Setup
+    - Install and Initial Setup
         - Download on local machine (windows) from https://tinyurl.com/yk8mv856 *this link has been shortened
         - Extract All 
         - Move extracted folder to This PC
@@ -100,7 +100,7 @@ This project focuses on automating the continuous integration and continuous dep
                 - Choose 'Generic' as the package type
                 - Click 'Create
             - Finish
-    b. Set up another user
+    - Set up another user
         - Navigate to Admin on the menu
         - Under Security, Select 'Users'
         - Add New User
