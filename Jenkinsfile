@@ -49,6 +49,7 @@ pipeline {
             bat "docker login -u ellaadeka -p ${dockerhubpwd}"
           }
           // Push image to dockerhub
+          bat 'docker tag ci-cd-pipeline ellaadeka/ci-cd-pipeline'
           bat 'docker push ellaadeka/ci-cd-pipeline'
         }
       }
