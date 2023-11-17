@@ -38,6 +38,22 @@ pipeline {
       }
     }
 
+    // Push Image to Dockerhub
+    stage("Deploy to DockerHub") {
+      steps {
+        // Deploy application
+        script {
+          bat 'echo "Deploying application to dockerhub..."'
+          withCredentials([string(credentialsId: 'dockerhubsecrets', variable: 'dockerhubpwd')]) {
+            // log in to Docker hub
+            bat "docker login -u ellaadeka -p ${dockerhubpwd}"
+          }
+          // Push image to dockerhub
+          bat 'docker push ellaadeka/ci-cd-pipeline'
+        }
+      }
+    }
+
     stage('Deploy to UAT') {
       // Deploy the application to the UAT environment
       steps {
