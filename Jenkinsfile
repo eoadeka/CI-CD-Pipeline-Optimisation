@@ -95,7 +95,7 @@ pipeline {
     success{
       // Actions to be performed on successful execution
       echo 'Pipeline succeeded!'
-    }
+      mail bcc: '', body: "<b>Pipeline succeeded<b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER}<br> Build URL: ${env.BUILD_URL}", cc: '', from: 'eoadeka@gmail.com', replyTo: '', subject: "PIPELINE SUCCESS: Project Name -> ${env.JOB_NAME}", to: 'dassalotbro1@gmail.com'    }
     
     failure{
       // Actions to be performed on pipeline failure
