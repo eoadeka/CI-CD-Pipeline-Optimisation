@@ -73,7 +73,7 @@ pipeline {
       }
     }
 
-    stage('Create Guthub Release') {
+    stage('Create Github Release') {
       // If UAT tests pass, promote the application to the staging environment
       when {
         expression { currentBuild.result == 'SUCCESS' }
