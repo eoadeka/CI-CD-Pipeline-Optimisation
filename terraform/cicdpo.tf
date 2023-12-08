@@ -1,3 +1,7 @@
+locals {
+  instance_type = "t2.micro"
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -15,17 +19,12 @@ data "aws_ami" "ubuntu" {
 }
 
 
-variable "environ" {
-  type = string
-  description = "Infrastructure environment"
-}
-
 module "ec2_app" {
   source = "./modules/ec2"
 
   environ = var.environ
   instance_ami = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
+  instance_type = local.instance_type
   subnets = module.vpc.vpc_public_subnets
   security_groups = [module.vpc.security_group_public]
   create_eip = true
@@ -44,3 +43,35 @@ module "vpc" {
   public_subnets = slice(cidrsubnets("10.0.0.0/16", 4, 4, 4, 4, 4, 4), 0, 3)
   private_subnets = slice(cidrsubnets("10.0.0.0/16", 4, 4, 4, 4, 4, 4), 3, 6)
 }
+
+module "s3" {
+  source = "./modules/s3"
+
+  environ = var.environ
+}
+
+
+module "launch_template" {
+  source = "./modules/autoscaling"
+
+  ami = data.aws_ami.ubuntu.id
+  instance_type = local.instance_type
+
+  # network_interfaces {
+  #   device_index = 0
+  #   security_group = [module.vpc.security_group_public]
+  # }
+
+  desired_capacity = 3
+  max_size = 2
+  min_size = 3
+  vpc_zone_identifier = [ for i in module.vpc.private_subnet[*] : i.id  ] 
+}
+
+module "elb" {
+  source = "./modules/elb"
+
+  environ = var.environ
+  azs = [ "eu-west-2a", "eu-west-2b" ]
+}
+
