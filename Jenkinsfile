@@ -1,12 +1,12 @@
 pipeline {
   agent any
 
-  // environment {
-  //   GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
-  //   GITHUB_TOKEN = credentials('')
-  // }
+  environment {
+    GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
+    GITHUB_TOKEN = credentials('github-personal-access-token')
+  }
   // dockerhub
-
+  // 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
   stages {
 
     stage('Checkout') {
@@ -80,7 +80,7 @@ pipeline {
       }
       steps {
         script {
-          bat 'echo "Deploying application to Staging and Production..."'
+          bat 'echo "Invoke Github Actions Workflow"'
         }
       }
     }
@@ -100,6 +100,29 @@ pipeline {
         body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
         to: "dassalotbro1@gmail.com"
       )
+      // Notify Github of success
+      script{
+        try {
+          // Step 1: Trigger Workflow
+          bat 'echo "Invoking Github Actions Workflow"'
+          def githubToken = env.GITHUB_TOKEN
+          def repo = env.GITHUB_REPO
+          def sha = env.GIT_COMMIT
+
+          bat """
+            curl -X POST
+            -H "Authorization: Bearer ${githubToken}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${repo}/statuses/${sha}" \
+            -d '{"state": "success", "context": "Jenkins"}'
+          """
+        }
+        catch (Exception e) {
+          echo 'Failed to invoke Github Actions: ${e.getMessage()}'
+          currentBuild.result = 'FAILURE'
+        }
+      
+      }
     }
     
     failure{
