@@ -22,6 +22,12 @@ This project focuses on automating the continuous integration and continuous dep
 - Release Manager (GitHub Actions)
 - Monitoring & Logging (Prometheus and Grafana)
 
+## AWS SERVICES
+- Amazon EC2 - Computing Resources
+- S3 - Storage 
+- Elastic Load Balancer - Distributing incoming traffic
+- Autoscaling - Auto increase number of instances running app
+
 ## TASKS
 1. **Web Application Setup**:
     Create a simple web application using Flask web framework
