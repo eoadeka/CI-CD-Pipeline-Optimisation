@@ -4,8 +4,8 @@ resource "random_shuffle" "subnets" {
 }
 
 module "ec2_instance" {
-    source = "terraform-aws-modules/ec2-instances/aws"
-    version = "2.17.0"
+    source = "terraform-aws-modules/ec2-instance/aws"
+    version = "5.5.0"
 
     name = "cicdpo-${var.environ}-web"
 

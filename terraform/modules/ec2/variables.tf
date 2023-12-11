@@ -16,7 +16,7 @@ variable "tags" {
 
 variable "create_eip" {
   type = bool
-  default = bool
+  default = false
   description = "create EIP or not?"
 }
 
