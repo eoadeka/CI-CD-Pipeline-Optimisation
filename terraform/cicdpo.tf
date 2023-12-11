@@ -54,6 +54,8 @@ module "s3" {
 module "launch_template" {
   source = "./modules/autoscaling"
 
+  environ = var.environ
+
   ami = data.aws_ami.ubuntu.id
   instance_type = local.instance_type
 
@@ -63,15 +65,22 @@ module "launch_template" {
   # }
 
   desired_capacity = 3
-  max_size = 2
+  max_size = 3
   min_size = 3
+  # target_group_arns = [ module.elb.target_group_arns ]
   vpc_zone_identifier = [ for i in module.vpc.private_subnet[*] : i.id  ] 
 }
 
-module "elb" {
+module "lb" {
   source = "./modules/elb"
 
   environ = var.environ
   azs = [ "eu-west-2a", "eu-west-2b" ]
+
+  security_groups    = [module.vpc.security_group_public]
+  subnets            = [for subnet in module.vpc.vpc_public_subnets[*] : subnet.id]
+
+  vpc_id = module.vpc.vpc_id
+
 }
 
