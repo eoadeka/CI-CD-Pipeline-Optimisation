@@ -5,8 +5,7 @@ pipeline {
     GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
     GITHUB_TOKEN = credentials('github-personal-access-token')
   }
-  // dockerhub
-  // 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
+
   stages {
 
     stage('Checkout') {
@@ -28,7 +27,7 @@ pipeline {
     }
 
     // Test Stage
-    stage('Test') {
+    stage('Test Dev') {
       //  Run Unit and Integration Tests
       steps {
         script {
@@ -39,7 +38,7 @@ pipeline {
     }
 
     // Push Image to Dockerhub
-    stage("Deploy to DockerHub") {
+    stage("Push Image to DockerHub") {
       steps {
         // Deploy application
         script {
@@ -55,32 +54,13 @@ pipeline {
       }
     }
 
-    stage('Deploy to UAT') {
-      // Deploy the application to the UAT environment
+    stage ("Infrastructure Provisioning for Dev Env") {
       steps {
         script {
-          bat 'echo "Deploying application to UAT..."'
-        }
-      }
-    }
-
-    stage('UAT') {
-      //  Run Usability Tests and Acceptance Criteria Verification
-      steps {
-        script {
-          bat 'echo "Running User Acceptance Testing ..."'
-        }
-      }
-    }
-
-    stage('Create Github Release') {
-      // If UAT tests pass, promote the application to the staging environment
-      when {
-        expression { currentBuild.result == 'SUCCESS' }
-      }
-      steps {
-        script {
-          bat 'echo "Invoke Github Actions Workflow"'
+          // Initialise Terraform
+          bat 'terraform init -backend-config='
+          // Apply Terraform
+          bat 'terraform apply -auto-approve'
         }
       }
     }
@@ -94,7 +74,7 @@ pipeline {
     
     success{
       // Actions to be performed on successful execution
-      echo 'Pipeline succeeded!'
+      echo 'Pipeline succeeded! Notifying Github of release'
       emailext (
         subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
         body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
