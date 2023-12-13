@@ -46,12 +46,10 @@ module "vpc" {
 
 module "s3" {
   source = "./modules/s3"
-
   environ = var.environ
 }
 
-
-module "launch_template" {
+module "autoscaling" {
   source = "./modules/autoscaling"
 
   environ = var.environ
