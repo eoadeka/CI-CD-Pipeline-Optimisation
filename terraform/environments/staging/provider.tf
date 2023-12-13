@@ -37,7 +37,3 @@ terraform {
     dynamodb_table = "cicdpo-terraform-state"
   }
 }
-
-provider "aws" {
-  region = "eu-west-2"
-}
