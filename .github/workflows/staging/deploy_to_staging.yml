@@ -1,0 +1,22 @@
+name: Deploy to Staging
+
+on:
+  workflow_run: 
+    workflows: ["Main Workflow"]
+    types: 
+      - completed
+
+
+jobs:
+  deploy-to-staging: 
+    runs-on: ubuntu-latest
+    
+    steps:
+        - name: Set up Terraform (staging)
+          uses: hashicorp/setup-terraform@v1  # This step sets up Terraform
+
+        - name: Terraform Init (staging)
+          run:  terraform init
+
+        - name: Terraform Apply (staging)
+          run:  terraform apply -auto-approve

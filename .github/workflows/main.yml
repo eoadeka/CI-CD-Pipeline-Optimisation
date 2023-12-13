@@ -1,0 +1,57 @@
+name: Main Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+  checkout-jenkins: 
+    needs: build 
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Jenkins
+      uses: actions/checkout@v2
+      with:
+        repository: ella-adeka/CI-CD-Pipeline-Optimisation
+        path: .github/workflows
+        ref: main
+  
+
+  deploy-to-staging:
+    needs: checkout-jenkins
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to Staging
+      uses: actions/checkout@v2
+      with:
+        repository: ella-adeka/CI-CD-Pipeline-Optimisation
+        path: .github/workflows/staging
+        ref: main
+
+  deploy-to-prod:
+    needs: deploy-to-staging
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to Production
+      uses: actions/checkout@v2
+      with:
+        repository: ella-adeka/CI-CD-Pipeline-Optimisation
+        path: .github/workflows/production
+        ref: main
+
+
+
+
+  

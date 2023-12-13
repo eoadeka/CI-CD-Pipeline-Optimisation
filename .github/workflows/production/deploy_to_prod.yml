@@ -1,0 +1,22 @@
+name: Deploy to Production
+
+on:
+  workflow_run: 
+    workflows: ["Main Workflow"]
+    types: 
+      - completed
+
+
+jobs:
+  deploy-to-production: 
+    runs-on: ubuntu-latest
+    
+    steps:
+        - name: Set up Terraform (prod)
+          uses: hashicorp/setup-terraform@v1  # This step sets up Terraform
+
+        - name: Terraform Init (prod)
+          run:  terraform init -backend-config=
+
+        - name: Terraform Apply (prod)
+          run:  terraform apply -auto-approve
