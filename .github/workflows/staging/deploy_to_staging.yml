@@ -16,7 +16,7 @@ jobs:
           uses: hashicorp/setup-terraform@v1  # This step sets up Terraform
 
         - name: Terraform Init (staging)
-          run:  terraform init
+          run:  terraform init -reconfigure -backend-config="stag-backend.conf"
 
         - name: Terraform Apply (staging)
           run:  terraform apply -auto-approve
