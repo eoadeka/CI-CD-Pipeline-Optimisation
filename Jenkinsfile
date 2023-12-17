@@ -54,13 +54,47 @@ pipeline {
       }
     }
 
-    stage ("Infrastructure Provisioning for Dev Env") {
+    stage("Infrastructure Provisioning for Dev Env") {
       steps {
         script {
           // Initialise Terraform
-          bat 'terraform init -backend-config='
+          bat 'terraform init -backend-config="dev-backend.conf"'
           // Apply Terraform
-          bat 'terraform apply -auto-approve'
+          bat 'terraform apply -auto-approve -input=false'
+        }
+      }
+    }
+
+    stage("Testing  Staging Env") {
+      steps {
+        script {
+          // bat 'act -j testing-staging'
+          bat 'echo "Performing Dry run for testing...."'
+          
+        }
+      }
+    }
+
+    stage("Infrastruture Provisioning for Staging Env") {
+      steps {
+        script {
+          bat 'echo "Performing Dry run for deploying to staging env...."'
+          // Initialise Terraform
+          bat 'terraform init -reconfigure -backend-config="stag-backend.conf"'
+          // Apply Terraform
+          bat 'terraform apply -auto-approve -input=false'
+        }
+      }
+    }
+
+    stage("Infrastruture Provisioning for Production Env") {
+      steps {
+        script {
+          bat 'echo "Performing dry run for deploying to production...."'
+          // Initialise Terraform
+          bat 'terraform init -reconfigure -backend-config="prod-backend.conf"'
+          // Apply Terraform
+          bat 'terraform apply -auto-approve -input=false'
         }
       }
     }
@@ -80,29 +114,6 @@ pipeline {
         body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
         to: "dassalotbro1@gmail.com"
       )
-      // Notify Github of success
-      script{
-        try {
-          // Step 1: Trigger Workflow
-          bat 'echo "Invoking Github Actions Workflow"'
-          def githubToken = env.GITHUB_TOKEN
-          def repo = env.GITHUB_REPO
-          def sha = env.GIT_COMMIT
-
-          bat """
-            curl -X POST
-            -H "Authorization: Bearer ${githubToken}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${repo}/statuses/${sha}" \
-            -d '{"state": "success", "context": "Jenkins"}'
-          """
-        }
-        catch (Exception e) {
-          echo 'Failed to invoke Github Actions: ${e.getMessage()}'
-          currentBuild.result = 'FAILURE'
-        }
-      
-      }
     }
     
     failure{
