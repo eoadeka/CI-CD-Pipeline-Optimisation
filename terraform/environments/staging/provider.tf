@@ -29,11 +29,5 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket = "cicdpo-terraform-state"
-    key = "multi-environment/staging/terraform.tfstate"
-    region = "eu-west-2"
-    encrypt = true
-    dynamodb_table = "cicdpo-terraform-state"
-  }
+  backend "s3" {}
 }
