@@ -34,7 +34,6 @@ pipeline {
       steps {
         script {
           echo "Testing application..."
-          bat 'playwright install'
           bat 'python -m pytest ./tests/integration/test_app.py'
         }
       }
