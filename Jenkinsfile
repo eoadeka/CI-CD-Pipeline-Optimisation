@@ -4,6 +4,8 @@ pipeline {
   environment {
     GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
     GITHUB_TOKEN = credentials('github-personal-access-token')
+    AWS_DEFAULT_REGION = 'eu-west-2'
+    AWS_CREDITS = ('ella-adeka-aws-credentials')
   }
 
   stages {
@@ -19,7 +21,7 @@ pipeline {
     stage('Build Image') {
       steps {
         script {
-          bat 'echo "Building application..."'
+          echo "Building application..."
           // Build for local/dev environment
           bat 'docker build -t ella-adeka/ci-cd-pipeline ./my_app'
         }
@@ -31,8 +33,9 @@ pipeline {
       //  Run Unit and Integration Tests
       steps {
         script {
-          bat 'echo "Testing application..."'
-          bat 'python -m pytest'
+          echo "Testing application..."
+          bat 'playwright install'
+          bat 'python -m pytest ./tests/integration/test_app.py'
         }
       }
     }
@@ -57,10 +60,14 @@ pipeline {
     stage("Infrastructure Provisioning for Dev Env") {
       steps {
         script {
+          // Test AWS is working by checking version
+          bat 'aws --version'
+
           // Initialise Terraform
-          bat 'terraform init -backend-config="dev-backend.conf"'
-          // Apply Terraform
-          bat 'terraform apply -auto-approve -input=false'
+          bat 'terraform init -reconfigure -backend-config="dev-backend.conf"'
+          // Perform terrraform action Terraform
+          echo 'Terraform action is --> ${action}'
+          bat 'terraform ${action} -auto-approve -input=false'
         }
       }
     }
@@ -70,31 +77,34 @@ pipeline {
         script {
           // bat 'act -j testing-staging'
           bat 'echo "Performing Dry run for testing...."'
-          
+          // Dry run staging test
+          bat 'act -j test-staging -n'
+          // Run staging tests
+          bat 'act -j test-staging'
         }
       }
     }
 
-    stage("Infrastruture Provisioning for Staging Env") {
+    stage("Infrastructure Provisioning for Staging Env") {
       steps {
         script {
           bat 'echo "Performing Dry run for deploying to staging env...."'
-          // Initialise Terraform
-          bat 'terraform init -reconfigure -backend-config="stag-backend.conf"'
-          // Apply Terraform
-          bat 'terraform apply -auto-approve -input=false'
+          // Dry run deploying to staging environment
+          bat 'act -j deploy-to-staging -n'
+          // Deploying to staging environment
+          bat 'act -j deploy-to-staging'
         }
       }
     }
 
-    stage("Infrastruture Provisioning for Production Env") {
+    stage("Infrastructure Provisioning for Production Env") {
       steps {
         script {
           bat 'echo "Performing dry run for deploying to production...."'
-          // Initialise Terraform
-          bat 'terraform init -reconfigure -backend-config="prod-backend.conf"'
-          // Apply Terraform
-          bat 'terraform apply -auto-approve -input=false'
+          // Dry run deploying to production environment
+          bat 'act -j deploy-to-production -n'
+          // Deploying to production environment
+          bat 'act -j deploy-to-production'
         }
       }
     }
