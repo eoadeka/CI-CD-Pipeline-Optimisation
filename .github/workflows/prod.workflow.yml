@@ -23,8 +23,14 @@ jobs:
         - name: Set up Terraform (prod)
           uses: hashicorp/setup-terraform@v1  # This step sets up Terraform
 
-        - name: Terraform Init (prod)
-          run:  terraform init -reconfigure -backend-config="prod-backend.conf"
+        - name: Initialise terraform for production
+          run:  terraform init -reconfigure -backend-config="./terraform/environments/production/prod-backend.conf"
+
+        - name: Validate Configuration
+          run: terraform validate 
+
+        - name: View resources to be created
+          run: terraform plan
 
         - name: Terraform Apply (prod)
           run:  terraform apply -auto-approve
