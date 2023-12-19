@@ -63,7 +63,7 @@ pipeline {
           bat 'aws --version'
 
           // Initialise Terraform
-          bat 'terraform init -reconfigure -backend-config="path=/terraform/environments/dev/dev-backend.conf"'
+          bat 'terraform init -reconfigure -backend-config="path=terraform/environments/dev/dev-backend.conf"'
 
           // Check for syntax errors and validate configuration
           bat 'terraform validate'
