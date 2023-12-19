@@ -50,7 +50,7 @@ pipeline {
             bat "docker login -u ellaadeka -p ${dockerhubpwd}"
           }
           // Push image to dockerhub
-          // bat 'docker tag ci-cd-pipeline ellaadeka/ci-cd-pipeline'
+          bat 'docker tag ci-cd-pipeline ellaadeka/ci-cd-pipeline'
           bat 'docker push ellaadeka/ci-cd-pipeline'
         }
       }
@@ -63,10 +63,17 @@ pipeline {
           bat 'aws --version'
 
           // Initialise Terraform
-          bat 'terraform init -reconfigure -backend-config="dev-backend.conf"'
+          bat 'terraform init -reconfigure -backend-config="./terraform/environments/dev/dev-backend.conf"'
+
+          // Check for syntax errors and validate configuration
+          bat 'terraform validate'
+
+          // View resources to be deployed
+          bat 'terraform plan'
+
           // Perform terrraform action Terraform
-          echo 'Terraform action is --> ${action}'
-          bat 'terraform ${action} -auto-approve -input=false'
+          echo "Terraform action is --> ${action}"
+          bat "terraform ${action} -auto-approve -input=false"
         }
       }
     }
