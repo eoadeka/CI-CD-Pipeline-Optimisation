@@ -4,8 +4,12 @@ pipeline {
   environment {
     GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
     GITHUB_TOKEN = credentials('github-personal-access-token')
-    AWS_DEFAULT_REGION = 'eu-west-2'
-    AWS_CREDITS = ('ella-adeka-aws-credentials')
+    // AWS_DEFAULT_REGION = 'eu-west-2'
+    // AWS_CREDITS = ('ella-adeka-aws-credentials')
+  }
+
+  tools {
+    terraform 'terraform'
   }
 
   stages {
@@ -63,27 +67,29 @@ pipeline {
           bat 'aws --version'
 
           dir("terraform/environments/dev/") {
-            // Initialise Terraform
-            bat 'terraform init -reconfigure'
+            withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
+              // Initialise Terraform
+              bat 'terraform init -reconfigure'
 
-            // Check for syntax errors and validate configuration
-            bat 'terraform validate'
+              // Check for syntax errors and validate configuration
+              bat 'terraform validate'
 
-            // View resources to be deployed
-            bat 'terraform plan'
+              // View resources to be deployed
+              bat 'terraform plan'
 
-            parameters([
-              choice(
-                choices: ['apply', 'destroy'],
-                name: 'action'
-              )
-            ])
+              parameters([
+                choice(
+                  choices: ['apply', 'destroy'],
+                  name: 'action'
+                )
+              ])
 
-            // Perform terrraform action Terraform
-            echo "Terraform action is --> ${action}"
-            bat "terraform ${action} -auto-approve -input=false"
+              // Perform terrraform action Terraform
+              echo "Terraform action is --> ${action}"
+              bat "terraform ${action} -auto-approve -input=false"
 
-            bat 'aws s3 cp terraform.tfstate s3://cicdpo-dev-tf-state-bucket'
+              bat 'aws s3 cp terraform.tfstate s3://cicdpo-dev-tf-state-bucket'
+            }
           }
         }
       }
