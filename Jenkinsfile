@@ -74,7 +74,7 @@ pipeline {
 
             parameters([
               choice(
-                choices: ['apply', 'destroy']
+                choices: ['apply', 'destroy'],
                 name: 'action'
               )
             ])
@@ -82,6 +82,8 @@ pipeline {
             // Perform terrraform action Terraform
             echo "Terraform action is --> ${action}"
             bat "terraform ${action} -auto-approve -input=false"
+
+            bat 'aws s3 cp terraform.tfstate s3://cicdpo-dev-tf-state-bucket'
           }
         }
       }
