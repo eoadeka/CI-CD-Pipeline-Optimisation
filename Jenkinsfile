@@ -62,18 +62,27 @@ pipeline {
           // Test AWS is working by checking version
           bat 'aws --version'
 
-          // Initialise Terraform
-          bat 'terraform init -reconfigure -backend-config="path=terraform/environments/dev/dev-backend.conf"'
+          dir("terraform/environments/dev/") {
+            // Initialise Terraform
+            bat 'terraform init -reconfigure'
 
-          // Check for syntax errors and validate configuration
-          bat 'terraform validate'
+            // Check for syntax errors and validate configuration
+            bat 'terraform validate'
 
-          // View resources to be deployed
-          bat 'terraform plan'
+            // View resources to be deployed
+            bat 'terraform plan'
 
-          // Perform terrraform action Terraform
-          echo "Terraform action is --> ${action}"
-          bat "terraform ${action} -auto-approve -input=false"
+            parameters([
+              choice(
+                choices: ['apply', 'destroy']
+                name: 'action'
+              )
+            ])
+
+            // Perform terrraform action Terraform
+            echo "Terraform action is --> ${action}"
+            bat "terraform ${action} -auto-approve -input=false"
+          }
         }
       }
     }
@@ -94,11 +103,13 @@ pipeline {
     stage("Infrastructure Provisioning for Staging Env") {
       steps {
         script {
-          bat 'echo "Performing Dry run for deploying to staging env...."'
-          // Dry run deploying to staging environment
-          bat 'act -j deploy-to-staging -n'
-          // Deploying to staging environment
-          bat 'act -j deploy-to-staging'
+          dir("terraform/environments/staging/") {
+            bat 'echo "Performing Dry run for deploying to staging env...."'
+            // Dry run deploying to staging environment
+            bat 'act -j deploy-to-staging -n'
+            // Deploying to staging environment
+            bat 'act -j deploy-to-staging'
+          }
         }
       }
     }
@@ -106,11 +117,13 @@ pipeline {
     stage("Infrastructure Provisioning for Production Env") {
       steps {
         script {
-          bat 'echo "Performing dry run for deploying to production...."'
-          // Dry run deploying to production environment
-          bat 'act -j deploy-to-production -n'
-          // Deploying to production environment
-          bat 'act -j deploy-to-production'
+          dir("terraform/environments/production/") {
+            bat 'echo "Performing dry run for deploying to production...."'
+            // Dry run deploying to production environment
+            bat 'act -j deploy-to-production -n'
+            // Deploying to production environment
+            bat 'act -j deploy-to-production'
+          }
         }
       }
     }
