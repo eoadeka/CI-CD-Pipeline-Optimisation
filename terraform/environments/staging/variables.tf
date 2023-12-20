@@ -11,8 +11,3 @@ variable "backend_bucket_name" {
 variable "backend_bucket_key" {
   type = string
 }
-
-variable "environ" {
-  type = string
-  description = "Infrastructure environment"
-}

@@ -20,7 +20,7 @@ data "aws_ami" "ubuntu" {
 
 
 module "ec2_app" {
-  source = "./modules/ec2"
+  source = "../../modules/ec2"
 
   environ = var.environ
   instance_ami = data.aws_ami.ubuntu.id
@@ -34,7 +34,7 @@ module "ec2_app" {
 }
 
 module "vpc" {
-  source = "./modules/vpc"
+  source = "../../modules/vpc"
 
   environ = var.environ
   vpc_cidr = "10.0.0.0/17"
@@ -45,6 +45,6 @@ module "vpc" {
 }
 
 module "s3" {
-  source = "./modules/s3"
+  source = "../../modules/s3"
   environ = var.environ
 }
