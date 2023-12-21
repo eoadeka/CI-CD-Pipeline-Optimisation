@@ -19,7 +19,7 @@ data "aws_ami" "ubuntu" {
 }
 
 
-module "ec2_app" {
+module "ec2" {
   source = ".../../modules/ec2"
 
   environ = var.environ
