@@ -68,6 +68,9 @@ pipeline {
 
           dir("terraform/environments/dev/") {
             withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
+              // import s3 backend bucket
+              bat "terraform import 'aws_s3_bucket.dev-backend-bucket' cicdpo-dev-tf-state-bucket"
+
               // Initialise Terraform
               bat 'terraform init -reconfigure'
 
