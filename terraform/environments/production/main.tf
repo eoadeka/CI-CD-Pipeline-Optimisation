@@ -2,20 +2,20 @@ locals {
   instance_type = "t2.micro"
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
+data "aws_ami" "amazon-linux-2" {
+ most_recent = true
 
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+ filter {
+   name   = "owner-alias"
+   values = ["amazon"]
+ }
 
-#   owners = ["099720109477"] # Canonical
+
+ filter {
+   name   = "name"
+   values = ["amzn2-ami-hvm*"]
+ }
 }
 
 
@@ -23,11 +23,13 @@ module "ec2" {
   source = "../../modules/ec2"
 
   environ = var.environ
-  instance_ami = data.aws_ami.ubuntu.id
+  instance_ami =  data.aws_ami.amazon-linux-2.id
   instance_type = local.instance_type
   subnets = module.vpc.vpc_public_subnets
   security_groups = [module.vpc.security_group_public]
   create_eip = true
+  key_pair = "cicdpo-${var.environ}-key"
+
   tags = {
     Name = "cicdpo-production-web"
   }
@@ -44,17 +46,17 @@ module "vpc" {
   private_subnets = slice(cidrsubnets("10.0.0.0/16", 4, 4, 4, 4, 4, 4), 3, 6)
 }
 
-module "s3" {
-  source = "../../modules/s3"
-  environ = var.environ
-}
+# module "s3" {
+#   source = "../../modules/s3"
+#   environ = var.environ
+# }
 
 module "autoscaling" {
   source = "../../modules/autoscaling"
 
   environ = var.environ
 
-  ami = data.aws_ami.ubuntu.id
+  ami =  data.aws_ami.amazon-linux-2.id
   instance_type = local.instance_type
 
   # network_interfaces {
@@ -62,14 +64,14 @@ module "autoscaling" {
   #   security_group = [module.vpc.security_group_public]
   # }
 
-  desired_capacity = 3
   max_size = 3
   min_size = 3
+  desired_capacity = 3
   # target_group_arns = [ module.elb.target_group_arns ]
-  vpc_zone_identifier = [ for i in module.vpc.private_subnet[*] : i.id  ] 
+  vpc_zone_identifier = [ for i in module.vpc.vpc_private_subnets[*] : i.id  ] 
 }
 
-module "lb" {
+module "alb" {
   source = "../../modules/elb"
 
   environ = var.environ

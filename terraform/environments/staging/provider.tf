@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     aws = {
-        source = "hashicorp/aws"
-        version = "~>3.0"
+      source = "hashicorp/aws"
+      version = ">= 4.60.0"
     }
   }
 
@@ -13,5 +13,18 @@ terraform {
     encrypt = true
     dynamodb_table = "cicdpo-stag-tf-state"
     profile = "staging"
+  }
+}
+
+provider "aws" {
+  region = "eu-west-2"
+}
+
+
+resource "aws_s3_bucket" "stag-backend-bucket" {
+  bucket = var.backend_bucket_name
+
+  lifecycle {
+    prevent_destroy = true
   }
 }

@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     aws = {
-        source = "hashicorp/aws"
-        version = "~> 4.16"
+      source = "hashicorp/aws"
+      version = ">= 4.60.0"
     }
   }
 
@@ -18,4 +18,13 @@ terraform {
 
 provider "aws" {
   region = "eu-west-2"
+}
+
+
+resource "aws_s3_bucket" "dev-backend-bucket" {
+  bucket = "cicdpo-dev-tf-state-bucket"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

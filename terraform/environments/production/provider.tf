@@ -1,31 +1,8 @@
-# resource "aws_s3_bucket" "tfstate" {
-#   bucket = "cicdpo-terraform-state"
-# }
-
-# resource "aws_s3_bucket_acl" "tfstate" {
-#   bucket = aws_s3_bucket.tfstate.id
-#   acl = private
-# }
-# # https://earthly.dev/blog/terraform-state-bucket/
-
-# resource "aws_dynamodb_table" "tfstate" {
-#   name = "cicdpo-terraform-state"
-#   read_capacity = 20
-#   write_capacity = 20
-#   hash_key = "LockID"
-
-#   attribute {
-#     name = "LockID"
-#     type = "S"
-#   }
-# }
-
-
 terraform {
   required_providers {
     aws = {
-        source = "hashicorp/aws"
-        version = "~>3.0"
+      source = "hashicorp/aws"
+      version = ">= 4.60.0"
     }
   }
 
@@ -39,3 +16,15 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "eu-west-2"
+}
+
+
+resource "aws_s3_bucket" "prod-backend-bucket" {
+  bucket = var.backend_bucket_name
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
