@@ -64,7 +64,7 @@ pipeline {
       steps {
         script {
           // Test AWS is working by checking version
-          bat 'aws --version'
+          // bat 'aws --version'
 
           dir("terraform/environments/dev/") {
             withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
@@ -91,7 +91,7 @@ pipeline {
               echo "Terraform action is --> ${action}"
               bat "terraform ${action} -auto-approve -input=false"
 
-              bat 'aws s3 cp terraform.tfstate s3://cicdpo-dev-tf-state-bucket'
+              // bat 'aws s3 cp terraform.tfstate s3://cicdpo-dev-tf-state-bucket'
             }
           }
         }
