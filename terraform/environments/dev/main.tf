@@ -34,7 +34,6 @@ data "aws_ami" "amazon-linux-2" {
  }
 }
 
-
 module "ec2" {
   source = "../../modules/ec2"
 

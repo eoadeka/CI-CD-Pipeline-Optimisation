@@ -26,7 +26,7 @@ module "ec2_instance" {
     subnet_id = random_shuffle.subnets.result[0]
     vpc_security_group_ids = var.security_groups
 
-    user_data = file("${path.module}/userdata.sh")
+    user_data = "${file("${path.module}/userdata.sh")}"
     key_name = aws_key_pair.key-pair.key_name
 
     tags = merge(
