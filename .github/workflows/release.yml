@@ -1,10 +1,10 @@
 # automate release
 name: Release Workflow
-
-on:
-  push:
-    tags:
-      - 'v*'
+on:  workflow_dispatch
+# on:
+#   push:
+#     tags:
+#       - 'v*'
 
 jobs:
   release:

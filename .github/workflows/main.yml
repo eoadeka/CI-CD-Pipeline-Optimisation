@@ -2,7 +2,8 @@
 
 name: Main Workflow
 
-on: [push]
+# on: [push]
+on: workflow_dispatch
 
 jobs:
   check-pull-request:
