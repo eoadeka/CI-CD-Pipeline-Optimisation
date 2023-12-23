@@ -2,17 +2,21 @@ Jenkins
 Poll SCM
     H/2 * * * * 
 
-Terraform
+
+**Terraform**   
 Initialise 
     terraform init -backend-config="access_key=***" -backend-config="secret_key=****" -backend-config="region=eu-west-2"
-
 Import
     terraform import 'aws_s3_bucket.dev-backend-bucket' cicdpo-dev-tf-state-bucket  
+Plan
+    terraform plan -out tfplandev.out
+Apply
+    terraform apply "tfplandev.out"
+
 
 Docker
 To run container image
     - docker build -t ci-cd-pipeline ./my_app
     - docker run -dp 5000:5000 ci-cd-pipeline 
-
 Docker compose
     docker compose -f docker-compose.dev.yml up
