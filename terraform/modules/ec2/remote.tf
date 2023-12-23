@@ -6,19 +6,19 @@ resource "null_resource" "remote" {
   connection {
     type = "ssh"
     user = "ec2-user"
-    private_key = ""
+    private_key = tls_private_key.tls-key.private_key_openssh
     host = module.ec2_instance.public_ip
   }
   
   provisioner "file" {
-    source = "userdata.sh"
+    source = "${path.module}/userdata.sh"
     destination = "/tmp/userdata.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/userdata.sh",
-      "/tmp/userdata.sh args",
+      # "/tmp/userdata.sh args",
     ]
   }
 }

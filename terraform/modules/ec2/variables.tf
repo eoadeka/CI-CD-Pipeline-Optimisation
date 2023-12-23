@@ -9,9 +9,9 @@ variable "project" {
 }
 
 variable "tags" {
-    type = map(string)
-    default = {}
-    description = "..."
+  type = map(string)
+  default = {}
+  description = "..."
 }
 
 variable "create_eip" {
@@ -28,6 +28,11 @@ variable "instance_ami" {
 variable "instance_type" {
   type = string
   description = "Instance type of EC2 instance"
+}
+
+variable "key_pair" {
+  type = string
+  description = "Private key for EC2 instance"
 }
 
 variable "subnets" {
