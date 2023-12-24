@@ -106,7 +106,7 @@ pipeline {
           // bat 'act -j testing-staging'
           bat 'echo "Performing Dry run for testing...."'
           // Dry run staging test
-          bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging -n'
+          // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging -n'
           // Run staging tests
           bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging'
         }
@@ -119,7 +119,7 @@ pipeline {
           dir("terraform/environments/staging/") {
             bat 'echo "Performing Dry run for deploying to staging env...."'
             // Dry run deploying to staging environment
-            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -n'
+            // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -n'
             // Deploying to staging environment
             bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging'
           }
