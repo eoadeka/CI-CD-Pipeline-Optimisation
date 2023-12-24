@@ -1,5 +1,8 @@
 name: Deploy to Production
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    branches:
+      - main
 
 env:
   # verbosity settting for Terraform logs

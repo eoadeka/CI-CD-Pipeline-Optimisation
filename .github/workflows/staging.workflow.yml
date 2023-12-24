@@ -1,7 +1,10 @@
 # checkout jenkins
 
 name: Test and Deploy Staging
-on:  workflow_dispatch
+on:
+  workflow_dispatch:
+    branches:
+      - main
 
 env:
     # verbosity settting for Terraform logs
