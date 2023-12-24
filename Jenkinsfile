@@ -101,6 +101,7 @@ pipeline {
     stage("Testing  Staging Env") {
       steps {
         script {
+          bat 'act --version'
           // bat 'act -j testing-staging'
           bat 'echo "Performing Dry run for testing...."'
           // Dry run staging test
