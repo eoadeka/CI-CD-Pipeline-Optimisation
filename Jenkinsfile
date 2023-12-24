@@ -108,7 +108,7 @@ pipeline {
           // Dry run staging test
           // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging -n'
           // Run staging tests
-          bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging'
+          bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging -W .github/workflows/staging.workflow.yml'
         }
       }
     }
@@ -121,7 +121,7 @@ pipeline {
             // Dry run deploying to staging environment
             // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -n'
             // Deploying to staging environment
-            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging'
+            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -W .github/workflows/prod.workflow.yml'
           }
         }
       }
@@ -133,7 +133,7 @@ pipeline {
           dir("terraform/environments/production/") {
             bat 'echo "Performing dry run for deploying to production...."'
             // Dry run deploying to production environment
-            bat 'act -j deploy-to-production -n'
+            // bat 'act -j deploy-to-production -n'
             // Deploying to production environment
             bat 'act -j deploy-to-production'
           }
