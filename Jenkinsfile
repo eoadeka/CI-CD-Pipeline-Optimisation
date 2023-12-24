@@ -116,13 +116,13 @@ pipeline {
     stage("Infrastructure Provisioning for Staging Env") {
       steps {
         script {
-          dir("terraform/environments/staging/") {
+          // dir("terraform/environments/staging/") {
             bat 'echo "Performing Dry run for deploying to staging env...."'
             // Dry run deploying to staging environment
             // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -n'
             // Deploying to staging environment
             bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging'
-          }
+          // }
         }
       }
     }
@@ -130,13 +130,13 @@ pipeline {
     stage("Infrastructure Provisioning for Production Env") {
       steps {
         script {
-          dir("terraform/environments/production/") {
+          // dir("terraform/environments/production/") {
             bat 'echo "Performing dry run for deploying to production...."'
             // Dry run deploying to production environment
             // bat 'act -j deploy-to-production -n'
             // Deploying to production environment
             bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-production'
-          }
+          // }
         }
       }
     }
