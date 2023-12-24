@@ -121,7 +121,7 @@ pipeline {
             // Dry run deploying to staging environment
             // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -n'
             // Deploying to staging environment
-            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -W .github/workflows/prod.workflow.yml'
+            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging'
           }
         }
       }
@@ -135,7 +135,7 @@ pipeline {
             // Dry run deploying to production environment
             // bat 'act -j deploy-to-production -n'
             // Deploying to production environment
-            bat 'act -j deploy-to-production'
+            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-production'
           }
         }
       }
