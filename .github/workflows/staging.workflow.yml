@@ -55,7 +55,7 @@ jobs:
       - name: fix terraform file permissions
         run: find /tmp -name "terraform" -type f -exec chmod 755 {} +
       - name: Terraform Init (staging)
-        run:  terraform init -reconfigure -backend-config="access_key=$AWS_ACCESS_KEY_ID" -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY" -backend-config="region=eu-west-2"
+        run:  terraform init -reconfigure -backend-config="access_key=${{env.AWS_ACCESS_KEY_ID}}" -backend-config="secret_key=${{env.AWS_SECRET_ACCESS_KEY}}" -backend-config="region=eu-west-2"
 
       - name: Validate Configuration
         run: terraform validate 

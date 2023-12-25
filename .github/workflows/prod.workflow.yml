@@ -21,7 +21,11 @@ jobs:
     # name: "Deploy to Production"
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      deployments: write
+      contents: write
+      statuses: write
+      actions: write
+      checks: read
     defaults:
       run:
         working-directory: terraform/environments/production
