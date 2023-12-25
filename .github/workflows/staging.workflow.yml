@@ -55,11 +55,11 @@ jobs:
       - name: fix terraform file permissions
         run: find /tmp -name "terraform" -type f -exec chmod 755 {} +
 
-      - name: Import bucket
-        run: terraform import 'aws_s3_bucket.stag-backend-bucket' cicdpo-stag-tf-state-bucket
-
       - name: Terraform Init (staging)
         run:  terraform init -reconfigure -backend-config="access_key=${{env.AWS_ACCESS_KEY_ID}}" -backend-config="secret_key=${{env.AWS_SECRET_ACCESS_KEY}}" -backend-config="region=eu-west-2"
+      
+      - name: Import bucket
+        run: terraform import 'aws_s3_bucket.stag-backend-bucket' cicdpo-stag-tf-state-bucket
 
       - name: Validate Configuration
         run: terraform validate 
