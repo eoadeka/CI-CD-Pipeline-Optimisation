@@ -6,7 +6,7 @@ variable "environ" {
 
 variable "backend_bucket_name" {
   type = string
-  default = "cicdpo-staging-tf-state-bucket"
+  default = "cicdpo-stag-tf-state-bucket"
 }
 
 # variable "backend_bucket_key" {
