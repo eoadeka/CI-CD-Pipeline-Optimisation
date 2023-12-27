@@ -2,59 +2,36 @@ locals {
   launch_template_name = "cicd-launch-template-${var.environ}"
 }
 
-module "autoscaling" {
-  source = "terraform-aws-modules/autoscaling/aws"
-  version = "7.3.1"
+resource "aws_launch_template" "launch_template" {
+  name          = local.launch_template_name
+  image_id      = var.ami
+  instance_type = var.instance_type
 
-  name = "cicdpo-${var.environ}-asg"
+  network_interfaces {
+    device_index    = 0
+    security_groups = var.security_groups
+  }
+  tag_specifications {
+    resource_type = "instance"
 
-  min_size = var.min_size
-  max_size = var.max_size
-  desired_capacity = var.desired_capacity
-  wait_for_capacity_timeout = 0
-  vpc_zone_identifier = var.vpc_zone_identifier
-
-  instance_refresh = {
-    strategy = "Rolling"
-    preferences = {
-      checkpoint_delay       = 600
-      checkpoint_percentages = [35, 70, 100]
-      instance_warmup        = 300
-      min_healthy_percentage = 50
+    tags = {
+      Name = "cicdpo-${var.environ}-web"
     }
-    triggers = ["tag"]
   }
 
-  # Launch template
-  launch_template_name = local.launch_template_name
-  launch_template_description = "${var.environ} environment launch template"
-  update_default_version = true
+ user_data = filebase64("${path.module}/userdata.sh")
+}
 
-  image_id = var.ami
-  instance_type = var.instance_type
-  ebs_optimized = true
-  enable_monitoring = true
+resource "aws_autoscaling_group" "auto_scaling_group" {
+  desired_capacity    = var.desired_capacity
+  max_size            = var.max_size
+  min_size            = var.min_size
+  vpc_zone_identifier = var.vpc_zone_identifier
+  target_group_arns   = var.target_group_arns
+  # target_group_arns   = [aws_lb_target_group.target_group.arn]
 
-  block_device_mappings = [
-    {
-      # Root volume
-      device_name = "/dev/xvda"
-      no_device   = 0
-      ebs = {
-        delete_on_termination = true
-        encrypted             = true
-        volume_size           = 20
-        volume_type           = "gp2"
-      }
-    }, {
-      device_name = "/dev/sda1"
-      no_device   = 1
-      ebs = {
-        delete_on_termination = true
-        encrypted             = true
-        volume_size           = 30
-        volume_type           = "gp2"
-      }
-    }
-  ]
+  launch_template {
+    id      = aws_launch_template.launch_template.id
+    version = aws_launch_template.launch_template.latest_version
+  }
 }

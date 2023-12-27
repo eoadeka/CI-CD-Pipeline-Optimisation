@@ -41,6 +41,5 @@ variable "max_size" {
 
 variable "vpc_zone_identifier" {
   type = list(string)
-  default = []
+  default = ["subnet-abcde012", "subnet-bcde012a"]
 }
-
