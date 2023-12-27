@@ -13,14 +13,8 @@ permissions:
 
 env:
   TF_LOG: INFO  # verbosity settting for Terraform logs
-  # Credentials for deploying to AWS
   AWS_REGION: ${{ AWS_REGION }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#     # S3 bucket for Terraform state
-#     # BUCKET_TF_STATE: ${{ secrets.STATE_BUCKET_TF_STATE }}
         
-
 jobs:
   test-staging: 
     runs-on: ubuntu-latest
@@ -59,9 +53,9 @@ jobs:
           path: main
 
       - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: Github-OIDC-TERRAFORM
 
@@ -78,7 +72,7 @@ jobs:
         env: 
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_STAG_BUCKET_NAME: ${{ AWS_STAG_BUCKET_NAME }}
+          AWS_STAG_BUCKET_NAME: ${{ secrets.AWS_STAG_BUCKET_NAME }}
         run:  |
           terraform init -backend-config="bucket=${AWS_STAG_BUCKET_NAME}" -backend-config="key=${AWS_STAG_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
         # run:  terraform init -reconfigure -backend-config="access_key=${{env.AWS_ACCESS_KEY_ID}}" -backend-config="secret_key=${{env.AWS_SECRET_ACCESS_KEY}}" -backend-config="region=eu-west-2"
