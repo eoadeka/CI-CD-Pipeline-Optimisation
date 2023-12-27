@@ -9,7 +9,7 @@ variable "environ" {
 
 variable "security_groups" {
   type = list(string)
-  default = []
+  default = [ "172.16.0.0/24", "172.16.1.0/24" ]
 }
 
 variable "subnets" {
