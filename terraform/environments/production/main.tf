@@ -56,19 +56,18 @@ module "autoscaling" {
 
   environ = var.environ
 
-  ami =  data.aws_ami.amazon-linux-2.id
+  ami = data.aws_ami.amazon-linux-2.id
   instance_type = local.instance_type
-
-  # network_interfaces {
-  #   device_index = 0
-  #   security_group = [module.vpc.security_group_public]
-  # }
 
   max_size = 3
   min_size = 3
   desired_capacity = 3
+  vpc_zone_identifier = module.vpc.vpc_private_subnets
+  target_group_arns = [module.alb.aws_lb_target_group_arn ]
+  # vpc_zone_identifier = [ for i in module.vpc.vpc_private_subnets[*] : i.private_subnets  ] 
   # target_group_arns = [ module.elb.target_group_arns ]
-  vpc_zone_identifier = [ for i in module.vpc.vpc_private_subnets[*] : i.id  ] 
+
+  security_groups = [module.vpc.security_group_public]
 }
 
 module "alb" {
@@ -78,7 +77,7 @@ module "alb" {
   azs = [ "eu-west-2a", "eu-west-2b" ]
 
   security_groups    = [module.vpc.security_group_public]
-  subnets            = [for subnet in module.vpc.vpc_public_subnets[*] : subnet.id]
+  subnets            = module.vpc.vpc_public_subnets
 
   vpc_id = module.vpc.vpc_id
 

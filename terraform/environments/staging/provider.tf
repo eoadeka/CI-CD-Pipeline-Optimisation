@@ -12,7 +12,7 @@ terraform {
     region = "eu-west-2"
     encrypt = true
     dynamodb_table = "cicdpo-stag-tf-state"
-    profile = "staging"
+    profile = "default"
   }
 }
 
