@@ -2,9 +2,11 @@ pipeline {
   agent any
 
   environment {
+    AWS_DEFAULT_REGION = 'eu-west-2'
     GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
     GITHUB_TOKEN = credentials('github-personal-access-token')
-    // AWS_DEFAULT_REGION = 'eu-west-2'
+    GLOBAL_ENVIRONMENT = 'no_deploy'
+    TF_WORKING_DIR = 'terraform/environments'
     // AWS_CREDITS = ('ella-adeka-aws-credentials')
   }
 
@@ -33,7 +35,7 @@ pipeline {
     }
 
     // Test Stage
-    stage('Test Dev') {
+    stage('Testing - Dev') {
       //  Run Unit and Integration Tests
       steps {
         script {
@@ -60,83 +62,61 @@ pipeline {
       }
     }
 
-    stage("Infrastructure Provisioning for Dev Env") {
+    stage("Deployment - Dev") {
+      when {
+        branch 'sandbox'
+      }
       steps {
         script {
-          // Test AWS is working by checking version
-          // bat 'aws --version'
+          echo "Deploying to dev environment..."
+          dir("${TF_WORKING_DIR}/dev/") {
+            deployInfra(dev)
+          }
+        }
+      }
+    }
 
-          dir("terraform/environments/dev/") {
-            withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
-              // import s3 backend bucket
-              // bat "terraform import 'aws_s3_bucket.dev-backend-bucket' cicdpo-dev-tf-state-bucket"
-
-              // Initialise Terraform
-              bat 'terraform init -reconfigure'
-
-              // Check for syntax errors and validate configuration
-              bat 'terraform validate'
-
-              // View resources to be deployed
-              bat 'terraform plan -out tfplandev.out'
-
-              parameters([
-                choice(
-                  choices: ['apply', 'destroy'],
-                  name: 'action'
-                )
-              ])
-
-              // Perform terrraform action Terraform
-              echo "Terraform action is --> ${action}"
-              bat "terraform ${action} -auto-approve -input=false"
-              // bat "terraform destroy -auto-approve -input=false"
-
-              // bat 'aws s3 cp terraform.tfstate s3://cicdpo-dev-tf-state-bucket'
+    stage("Deployment - Staging") {
+      when {
+        branch 'production'
+      }
+      stage ('Test Staging') {
+        steps {
+          script {
+            echo "Testing staging environment..."
+            bat '''
+              python -m pip install --upgrade pip
+              pip install -r ./my_app/requirements.txt
+              npx playwright install
+              npx playwright install-deps
+            '''
+          }
+        }
+      }
+      stage ('Deploy Staging') {
+        steps {
+          script {
+            echo "Deploying to staging environment..."
+            dir("${TF_WORKING_DIR}/staging/") {
+              deployInfra(staging)
             }
           }
         }
       }
     }
 
-    stage("Testing  Staging Env") {
-      steps {
-        script {
-          bat 'act --version'
-          // bat 'act -j testing-staging'
-          bat 'echo "Performing Dry run for testing...."'
-          // Dry run staging test
-          // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging -n'
-          // Run staging tests
-          bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j test-staging -W .github/workflows/staging.workflow.yml'
-        }
+    stage("Deployment - Production") {
+      when {
+        // Deploy to production only if user confirms
+        branch 'production'
+        echo 'Staging tests passed!'
+        input 'Deploy to production?'
       }
-    }
-
-    stage("Infrastructure Provisioning for Staging Env") {
       steps {
         script {
-          // dir("terraform/environments/staging/") {
-            bat 'echo "Performing Dry run for deploying to staging env...."'
-            // Dry run deploying to staging environment
-            // bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging -n'
-            // Deploying to staging environment
-            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-staging'
-          // }
-        }
-      }
-    }
-
-    stage("Infrastructure Provisioning for Production Env") {
-      steps {
-        script {
-          // dir("terraform/environments/production/") {
-            bat 'echo "Performing dry run for deploying to production...."'
-            // Dry run deploying to production environment
-            // bat 'act -j deploy-to-production -n'
-            // Deploying to production environment
-            bat 'act -P ubuntu-latest=catthehacker/ubuntu:act-latest -j deploy-to-production'
-          // }
+          dir("${TF_WORKING_DIR}/production/") {
+           deployInfra(production)
+          }
         }
       }
     }
@@ -146,11 +126,17 @@ pipeline {
     always {
       // Cleanup actions
       echo 'Always executing cleanup...'
+      echo 'destroying Terraform resources'
+      script {
+        dir ("terraform/environments/") {
+          bat "terraform destroy -auto-approve"
+        }
+      }
     }
     
     success{
       // Actions to be performed on successful execution
-      echo 'Pipeline succeeded! Notifying Github of release'
+      echo 'Pipeline succeeded! Notifying Github for release'
       emailext (
         subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
         body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
@@ -167,5 +153,31 @@ pipeline {
         to: "dassalotbro1@gmail.com"
       )
     }
+  }
+}
+
+// Function to deploy infrastructure using Terraform
+def deployInfra(environment) {
+  echo "Provisioning infrastructure for ${environment} environment"
+  withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
+    // Initialise Terraform
+    bat 'terraform init -reconfigure'
+
+    // Check for syntax errors and validate configuration
+    bat 'terraform validate'
+
+    // View resources to be deployed
+    bat 'terraform plan -out tfplan${environment}.out'
+
+    parameters([
+      choice(
+        choices: ['apply', 'destroy'],
+        name: 'action'
+      )
+    ])
+
+    // Perform terrraform action Terraform
+    echo "Terraform action is --> ${action}"
+    bat "terraform ${action} -auto-approve -input=false"
   }
 }
