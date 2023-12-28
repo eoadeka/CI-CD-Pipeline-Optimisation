@@ -5,62 +5,57 @@ on:
   workflow_dispatch:
     branches:
       - main
-
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
+    inputs:
+      AWS_REGION:
+        required: true
+        default: eu-west-2
 
 env:
   TF_LOG: INFO  # verbosity settting for Terraform logs
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-        
+ 
+
 jobs:
   test-staging: 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.9'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r ./my_app/requirements.txt
-          playwright install
+          npx playwright install
           playwright install-deps
       - name: Test with pytest
         run: pytest ./tests/e2e/test_example.py
     
   deploy-to-staging: 
     # name: "Deploy to Staging"
-    runs-on: ubuntu-latest
     permissions:
-      deployments: write
-      contents: write
-      statuses: write
-      actions: write
-      checks: read
+      id-token: 'write' # This is required for requesting the JWT
+      # contents: 'read'  # This is required for actions/checkout 
+    runs-on: ubuntu-latest  
     defaults:
       run:
-        shell: bash
         working-directory: terraform/environments/staging
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          path: main
+        uses: actions/checkout@v3
+        # with:
+        #   path: main
 
-      - name: Configure AWS credentials from AWS account
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-session-name: Github-OIDC-TERRAFORM
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::198602996340:role/cicdpo-role
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
 
       - name: Set up Terraform (staging)
-        uses: hashicorp/setup-terraform@v3  # This step sets up Terraform
+        uses: hashicorp/setup-terraform@v1  # This step sets up Terraform
         with:
           terraform_version: 1.3.0
       
@@ -74,7 +69,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_STAG_BUCKET_NAME: ${{ secrets.AWS_STAG_BUCKET_NAME }}
         run:  |
-          terraform init -backend-config="bucket=${AWS_STAG_BUCKET_NAME}" -backend-config="key=${AWS_STAG_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+          terraform init -backend-config="bucket=${AWS_STAG_BUCKET_NAME}" -backend-config="key=${AWS_STAG_BUCKET_KEY_NAME}" -backend-config="region=eu-west-2"
         # run:  terraform init -reconfigure -backend-config="access_key=${{env.AWS_ACCESS_KEY_ID}}" -backend-config="secret_key=${{env.AWS_SECRET_ACCESS_KEY}}" -backend-config="region=eu-west-2"
       
       # - name: Import bucket
