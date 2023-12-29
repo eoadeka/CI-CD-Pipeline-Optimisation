@@ -77,7 +77,7 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("./${TF_WORKING_DIR}/dev/") {
+          dir("./terraform/environments/dev/") {
             deployInfra(dev)
           }
         }
@@ -91,14 +91,14 @@ pipeline {
       steps {
         script {
           echo "Testing staging environment..."
-          bat '''
-            python -m pip install --upgrade pip
-            pip install -r ./my_app/requirements.txt
-            npx playwright install
-            npx playwright install-deps
-          '''
+          // bat '''
+          //   python -m pip install --upgrade pip
+          //   pip install -r ./my_app/requirements.txt
+          //   npx playwright install
+          //   npx playwright install-deps
+          // '''
           echo "Deploying to staging environment..."
-          dir("${TF_WORKING_DIR}/staging/") {
+          dir("./terraform/environments/staging/") {
             deployInfra(staging)
           }
         }
