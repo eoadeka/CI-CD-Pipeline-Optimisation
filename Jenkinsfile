@@ -78,7 +78,7 @@ pipeline {
 
     stage("Deployment - Staging") {
       when {
-        branch 'production'
+        branch 'staging'
       }
       stage ('Test Staging') {
         steps {
@@ -109,11 +109,11 @@ pipeline {
       when {
         // Deploy to production only if user confirms
         branch 'production'
-        echo 'Staging tests passed!'
         input 'Deploy to production?'
       }
       steps {
         script {
+          echo 'Staging tests passed!'
           dir("${TF_WORKING_DIR}/production/") {
            deployInfra(production)
           }
@@ -128,7 +128,7 @@ pipeline {
       echo 'Always executing cleanup...'
       echo 'destroying Terraform resources'
       script {
-        dir ("terraform/environments/") {
+        dir ("terraform/environments/dev") {
           bat "terraform destroy -auto-approve"
         }
       }
