@@ -77,7 +77,7 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("${TF_WORKING_DIR}/dev/") {
+          dir("./${TF_WORKING_DIR}/dev/") {
             deployInfra(dev)
           }
         }
@@ -88,20 +88,18 @@ pipeline {
       when {
         branch 'staging'
       }
-      stage ('Deploy Staging') {
-        steps {
-          script {
-            echo "Testing staging environment..."
-            bat '''
-              python -m pip install --upgrade pip
-              pip install -r ./my_app/requirements.txt
-              npx playwright install
-              npx playwright install-deps
-            '''
-            echo "Deploying to staging environment..."
-            dir("${TF_WORKING_DIR}/staging/") {
-              deployInfra(staging)
-            }
+      steps {
+        script {
+          echo "Testing staging environment..."
+          bat '''
+            python -m pip install --upgrade pip
+            pip install -r ./my_app/requirements.txt
+            npx playwright install
+            npx playwright install-deps
+          '''
+          echo "Deploying to staging environment..."
+          dir("${TF_WORKING_DIR}/staging/") {
+            deployInfra(staging)
           }
         }
       }
@@ -111,9 +109,9 @@ pipeline {
       when {
         // Deploy to production only if user confirms
         branch 'production'
-        input('Deploy to production?')
       }
       steps {
+        input('Deploy to production?')
         script {
           echo 'Staging tests passed!'
           dir("${TF_WORKING_DIR}/production/") {
