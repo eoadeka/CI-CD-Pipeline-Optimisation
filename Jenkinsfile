@@ -5,7 +5,6 @@ pipeline {
     AWS_DEFAULT_REGION = 'eu-west-2'
     GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
     GITHUB_TOKEN = credentials('github-personal-access-token')
-    GLOBAL_ENVIRONMENT = 'no_deploy'
     TF_WORKING_DIR = 'terraform/environments'
     // AWS_CREDITS = ('ella-adeka-aws-credentials')
   }
@@ -25,6 +24,9 @@ pipeline {
 
     // Build Stage
     stage('Build Image') {
+      when {
+        branch 'sandbox'
+      }
       steps {
         script {
           echo "Building application..."
@@ -36,6 +38,9 @@ pipeline {
 
     // Test Stage
     stage('Testing - Dev') {
+      when {
+        branch 'sandbox'
+      }
       //  Run Unit and Integration Tests
       steps {
         script {
@@ -47,6 +52,9 @@ pipeline {
 
     // Push Image to Dockerhub
     stage("Push Image to DockerHub") {
+      when {
+        branch 'sandbox'
+      }
       steps {
         // Deploy application
         script {
@@ -80,7 +88,7 @@ pipeline {
       when {
         branch 'staging'
       }
-      stage ('Test Staging') {
+      stage ('Deploy Staging') {
         steps {
           script {
             echo "Testing staging environment..."
@@ -90,12 +98,6 @@ pipeline {
               npx playwright install
               npx playwright install-deps
             '''
-          }
-        }
-      }
-      stage ('Deploy Staging') {
-        steps {
-          script {
             echo "Deploying to staging environment..."
             dir("${TF_WORKING_DIR}/staging/") {
               deployInfra(staging)
@@ -109,7 +111,7 @@ pipeline {
       when {
         // Deploy to production only if user confirms
         branch 'production'
-        input 'Deploy to production?'
+        input('Deploy to production?')
       }
       steps {
         script {
