@@ -77,7 +77,7 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("${TF_WORKING_DIR}/dev/") {
+          dir("./${TF_WORKING_DIR}/dev/") {
             deployInfra(dev)
           }
         }
