@@ -126,12 +126,12 @@ pipeline {
     always {
       // Cleanup actions
       echo 'Always executing cleanup...'
-      echo 'destroying Terraform resources'
-      script {
-        dir ("terraform/environments/dev") {
-          bat "terraform destroy -auto-approve"
-        }
-      }
+      // echo 'destroying Terraform resources'
+      // script {
+      //   dir ("terraform/environments/dev") {
+      //     bat "terraform destroy -auto-approve"
+      //   }
+      // }
     }
     
     success{
@@ -167,7 +167,7 @@ def deployInfra(environ) {
     bat 'terraform validate'
 
     // View resources to be deployed
-    bat 'terraform plan -out tfplan${environ}.out'
+    bat 'terraform plan -out tfplan.out'
 
     parameters([
       choice(
