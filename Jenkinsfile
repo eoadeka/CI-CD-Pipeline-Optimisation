@@ -98,8 +98,29 @@ pipeline {
           //   npx playwright install-deps
           // '''
           echo "Deploying to staging environment..."
-          dir("./terraform/environments/staging/") {
-            deployInfra(staging)
+          dir("${TF_WORKING_DIR}/staging/") {
+            // deployInfra(staging)
+            withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
+            // Initialise Terraform
+            bat 'terraform init -reconfigure'
+
+            // Check for syntax errors and validate configuration
+            bat 'terraform validate'
+
+            // View resources to be deployed
+            bat 'terraform plan -out tfplan${environment}.out'
+
+            parameters([
+              choice(
+                choices: ['apply', 'destroy'],
+                name: 'action'
+              )
+            ])
+
+            // Perform terrraform action Terraform
+            echo "Terraform action is --> ${action}"
+            bat "terraform ${action} -auto-approve -input=false"
+  }
           }
         }
       }
