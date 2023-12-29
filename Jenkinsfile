@@ -77,8 +77,8 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("./${TF_WORKING_DIR}/dev/") {
-            deployInfra(dev)
+          dir("./terraform/environments/dev/") {
+            deployInfra('dev')
           }
         }
       }
@@ -99,7 +99,7 @@ pipeline {
           '''
           echo "Deploying to staging environment..."
           dir("${TF_WORKING_DIR}/staging/") {
-            deployInfra(staging)
+            deployInfra('staging')
           }
         }
       }
@@ -115,7 +115,7 @@ pipeline {
         script {
           echo 'Staging tests passed!'
           dir("${TF_WORKING_DIR}/production/") {
-           deployInfra(production)
+           deployInfra('production')
           }
         }
       }
@@ -157,8 +157,8 @@ pipeline {
 }
 
 // Function to deploy infrastructure using Terraform
-def deployInfra(environment) {
-  echo "Provisioning infrastructure for ${environment} environment"
+def deployInfra(environ) {
+  echo "Provisioning infrastructure for ${environ} environment"
   withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
     // Initialise Terraform
     bat 'terraform init -reconfigure'
@@ -167,7 +167,7 @@ def deployInfra(environment) {
     bat 'terraform validate'
 
     // View resources to be deployed
-    bat 'terraform plan -out tfplan${environment}.out'
+    bat 'terraform plan -out tfplan${environ}.out'
 
     parameters([
       choice(
