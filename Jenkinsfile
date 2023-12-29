@@ -77,8 +77,9 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("./terraform/environments/dev/") {
-            deployInfra(dev)
+          dir("${TF_WORKING_DIR}/dev/") {
+            deployInfra('dev')
+
           }
         }
       }
@@ -115,7 +116,7 @@ pipeline {
         script {
           echo 'Staging tests passed!'
           dir("${TF_WORKING_DIR}/production/") {
-           deployInfra(production)
+           deployInfra('production')
           }
         }
       }
