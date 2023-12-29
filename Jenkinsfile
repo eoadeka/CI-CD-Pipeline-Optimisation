@@ -77,7 +77,7 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("./${TF_WORKING_DIR}/dev/") {
+          dir("./terraform/environments/dev/") {
             deployInfra(dev)
           }
         }
@@ -91,15 +91,15 @@ pipeline {
       steps {
         script {
           echo "Testing staging environment..."
-          bat '''
-            python -m pip install --upgrade pip
-            pip install -r ./my_app/requirements.txt
-            npx playwright install
-            npx playwright install-deps
-          '''
+          // bat '''
+          //   python -m pip install --upgrade pip
+          //   pip install -r ./my_app/requirements.txt
+          //   npx playwright install
+          //   npx playwright install-deps
+          // '''
           echo "Deploying to staging environment..."
           dir("${TF_WORKING_DIR}/staging/") {
-            deployInfra(staging)
+            deployInfra('staging')
           }
         }
       }
@@ -157,8 +157,8 @@ pipeline {
 }
 
 // Function to deploy infrastructure using Terraform
-def deployInfra(environment) {
-  echo "Provisioning infrastructure for ${environment} environment"
+def deployInfra(environ) {
+  echo "Provisioning infrastructure for ${environ} environment"
   withAWS(credentials: 'ella-adeka-aws-credentials', region: 'eu-west-2') {
     // Initialise Terraform
     bat 'terraform init -reconfigure'
@@ -167,7 +167,7 @@ def deployInfra(environment) {
     bat 'terraform validate'
 
     // View resources to be deployed
-    bat 'terraform plan -out tfplan${environment}.out'
+    bat 'terraform plan -out tfplan${environ}.out'
 
     parameters([
       choice(
