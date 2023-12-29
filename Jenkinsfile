@@ -168,17 +168,17 @@ def deployInfra(environ) {
     bat 'terraform validate'
 
     // View resources to be deployed
-    bat 'terraform plan -out tfplan.out'
+    // bat 'terraform plan -out tfplan.out'
 
-    parameters([
-      choice(
-        choices: ['apply', 'destroy'],
-        name: 'action'
-      )
-    ])
+    // parameters([
+    //   choice(
+    //     choices: ['apply', 'destroy'],
+    //     name: 'action'
+    //   )
+    // ])
 
     // Perform terrraform action Terraform
-    echo "Terraform action is --> ${action}"
-    bat "terraform ${action} -auto-approve -input=false"
+    // echo "Terraform action is --> ${action}"
+    bat "terraform apply -auto-approve -input=false"
   }
 }
