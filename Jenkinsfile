@@ -99,7 +99,7 @@ pipeline {
           // '''
           echo "Deploying to staging environment..."
           dir("${TF_WORKING_DIR}/staging/") {
-            deployInfra(staging)
+            deployInfra('staging')
           }
         }
       }
