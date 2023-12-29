@@ -109,9 +109,9 @@ pipeline {
       when {
         // Deploy to production only if user confirms
         branch 'production'
-        input('Deploy to production?')
       }
       steps {
+        input('Deploy to production?')
         script {
           echo 'Staging tests passed!'
           dir("${TF_WORKING_DIR}/production/") {
