@@ -77,7 +77,7 @@ pipeline {
       steps {
         script {
           echo "Deploying to dev environment..."
-          dir("./terraform/environments/dev/") {
+          dir("${TF_WORKING_DIR}/dev/") {
             deployInfra('dev')
           }
         }
@@ -126,12 +126,12 @@ pipeline {
     always {
       // Cleanup actions
       echo 'Always executing cleanup...'
-      echo 'destroying Terraform resources'
-      script {
-        dir ("terraform/environments/dev") {
-          bat "terraform destroy -auto-approve"
-        }
-      }
+      // echo 'destroying Terraform resources'
+      // script {
+      //   dir ("terraform/environments/dev") {
+      //     bat "terraform destroy -auto-approve"
+      //   }
+      // }
     }
     
     success{
@@ -167,17 +167,17 @@ def deployInfra(environ) {
     bat 'terraform validate'
 
     // View resources to be deployed
-    bat 'terraform plan -out tfplan${environ}.out'
+    // bat 'terraform plan -out tfplan.out'
 
-    parameters([
-      choice(
-        choices: ['apply', 'destroy'],
-        name: 'action'
-      )
-    ])
+    // parameters([
+    //   choice(
+    //     choices: ['apply', 'destroy'],
+    //     name: 'action'
+    //   )
+    // ])
 
     // Perform terrraform action Terraform
-    echo "Terraform action is --> ${action}"
-    bat "terraform ${action} -auto-approve -input=false"
+    // echo "Terraform action is --> ${action}"
+    bat "terraform apply -auto-approve -input=false"
   }
 }
