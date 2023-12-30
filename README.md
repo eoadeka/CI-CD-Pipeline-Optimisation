@@ -1,4 +1,4 @@
-# CONTINUOUS INTEGRATION AND CONTINUOUS DEPLOYMENT (CI/CD) PIPELINE OPTIMISTION
+# CONTINUOUS INTEGRATION AND CONTINUOUS DEPLOYMENT (CI/CD) PIPELINE OPTIMISATION
 
 This project focuses on automating the continuous integration and continuous deployment (CI/CD) of a web application using Jenkins and Docker. The goal is to streamline the development process, reduce manual intervention, and ensure efficient and reliable application delivery.
 
