@@ -167,6 +167,7 @@ def deployInfra(environ) {
     bat 'terraform validate'
 
     // View resources to be deployed
+    bat 'terraform plan'
     // bat 'terraform plan -out tfplan.out'
 
     // parameters([
