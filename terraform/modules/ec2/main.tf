@@ -16,7 +16,7 @@ resource "aws_key_pair" "key-pair" {
 
 resource "local_file" "key-local-file" {
   content = tls_private_key.tls-key.private_key_pem
-  filename = var.key_pair
+  filename = "${var.key_pair}.pem"
 }
 
 module "ec2_instance" {
