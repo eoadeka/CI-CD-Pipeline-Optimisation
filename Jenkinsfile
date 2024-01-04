@@ -1,12 +1,15 @@
 pipeline {
   agent any
 
+  triggers {
+    cron('H/2 * * * *')
+  }
+
   environment {
     AWS_DEFAULT_REGION = 'eu-west-2'
     GITHUB_REPO = 'ella-adeka/CI-CD-Pipeline-Optimisation'
     GITHUB_TOKEN = credentials('github-personal-access-token')
     TF_WORKING_DIR = 'terraform/environments'
-    // AWS_CREDITS = ('ella-adeka-aws-credentials')
   }
 
   tools {
