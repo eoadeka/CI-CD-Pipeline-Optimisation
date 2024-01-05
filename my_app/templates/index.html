@@ -73,10 +73,21 @@
             <h3>Project Lifecycle</h3>
             <img src="{{url_for('static', filename='cicdpo-poster.png')}}" align="middle" height="auto" width="100%" />
 
-            <p>This project focuses on automating the continuous integration and continuous deployment (CI/CD) of a web application using Jenkins and Docker. The goal is to streamline the development process, reduce manual intervention, and ensure efficient and reliable application delivery.</p>
+            <p>This project focuses on automating the continuous integration and continuous deployment 
+                (CI/CD) of a web application using Jenkins and Docker. The goal is to streamline the 
+                development process, reduce manual intervention, and ensure efficient and reliable 
+                application delivery.</p>
+
+            <p>The activities of the pipeline include:</p>
+            <ol>
+                <li><strong>Code: </strong>A simple web application was created with the Python Framework 'Flask'. VSCode was the code editor of choice.</li>
+                <li><strong>Build: </strong>Jenkins was configured to automatically trigger builds upon pull requests made to the repository.</li>
+                <li><strong>Test: </strong>Unit and integration tests were conducted for the development environment to ensure individual components function as intended. End-to-End (E2E) tests were performed in the staging environment, simulating real-world scenarios.</li>
+                <li><strong>Release: </strong>Jenkins was used to automate deployment to the staging environment. Chnages were promoted to the production environment follwoing successful testing in the staging environment.</li>
+                <li><strong>Monitor: </strong>Promoetheus and Grafana were implemented to collect and store metrics from the application and infrastructure. Continuous monitoring will provide real-time insights into application health, performance, and resource utilisation.</li>
+            </ol>
 
         </div>
     </div>
-
 </body>
 </html>
