@@ -1,9 +1,9 @@
 pipeline {
   agent any
 
-  triggers {
-    cron('H/2 * * * *')
-  }
+  // triggers {
+  //   cron('H/2 * * * *')
+  // }
 
   environment {
     AWS_DEFAULT_REGION = 'eu-west-2'
