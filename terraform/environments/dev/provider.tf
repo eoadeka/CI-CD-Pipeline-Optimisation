@@ -21,10 +21,10 @@ provider "aws" {
 }
 
 
-resource "aws_s3_bucket" "dev-backend-bucket" {
-  bucket = "cicdpo-dev-tf-state-bucket"
+# resource "aws_s3_bucket" "dev-backend-bucket" {
+#   bucket = "cicdpo-dev-tf-state-bucket"
 
-  lifecycle {
-    prevent_destroy = true
-  }
-}
+#   lifecycle {
+#     prevent_destroy = true
+#   }
+# }

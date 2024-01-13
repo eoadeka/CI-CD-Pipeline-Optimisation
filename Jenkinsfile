@@ -182,6 +182,7 @@ def deployInfra(environ) {
 
     // Perform terrraform action Terraform
     // echo "Terraform action is --> ${action}"
-    bat "terraform apply -auto-approve -input=false"
+    // bat "terraform apply -auto-approve -input=false"
+    bat "terraform destroy -auto-approve -input=false"
   }
 }
